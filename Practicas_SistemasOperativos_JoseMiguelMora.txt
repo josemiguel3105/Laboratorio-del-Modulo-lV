@@ -1,13 +1,6 @@
-============================================
-SISTEMAS OPERATIVOS - PARROT OS
-Nombre: José Miguel Mora
-Matrícula: 20250668
-Asignatura: Sistemas Operativos
-============================================
 
-===============================
-PRACTICA 1: Servidor HTTP (Apache2)
-===============================
+
+PRACTICA 1: Servidor HTTP (Ap
 
 # 1. Actualizar el sistema
 sudo apt update && sudo apt upgrade -y
@@ -71,9 +64,8 @@ sudo systemctl restart apache2
 sudo apache2ctl -S
 
 
-===============================
 PRACTICA 2: Servidor de correos (Postfix)
-===============================
+
 
 # 1. Instalar Postfix
 sudo apt install postfix -y
@@ -104,9 +96,9 @@ mailq
 sudo tail -n 20 /var/log/mail.log
 
 
-===============================
+
 PRACTICA 3: Servidor de impresión (CUPS)
-===============================
+
 
 # 1. Instalar CUPS
 sudo apt install cups -y
@@ -146,6 +138,6 @@ ls ~/PDF
 # 9. Abrir el PDF generado
 xdg-open ~/PDF/home_jose_PDF.pdf
 
-============================================
+
 FIN DE LAS PRACTICAS - PARROT OS
-============================================
+
