@@ -1,0 +1,151 @@
+============================================
+SISTEMAS OPERATIVOS - PARROT OS
+Nombre: José Miguel Mora
+Matrícula: 20250668
+Asignatura: Sistemas Operativos
+============================================
+
+===============================
+PRACTICA 1: Servidor HTTP (Apache2)
+===============================
+
+# 1. Actualizar el sistema
+sudo apt update && sudo apt upgrade -y
+
+# 2. Instalar Apache2
+sudo apt install apache2 -y
+
+# 3. Habilitar e iniciar el servicio
+sudo systemctl enable apache2
+sudo systemctl start apache2
+
+# 4. Crear website estático "Hola Mundo"
+sudo mkdir -p /var/www/html/holamundo
+echo "<html><body><h1>Hola Mundo</h1></body></html>" | sudo tee /var/www/html/holamundo/index.html
+
+# 5. Crear archivo de configuración para el host virtual (puerto 80)
+sudo nano /etc/apache2/sites-available/holamundo.conf
+
+# Contenido del archivo:
+# <VirtualHost *:80>
+#     ServerAdmin jose@localhost
+#     ServerName holamundo.local
+#     DocumentRoot /var/www/html/holamundo
+#     ErrorLog ${APACHE_LOG_DIR}/error.log
+#     CustomLog ${APACHE_LOG_DIR}/access.log combined
+# </VirtualHost>
+
+# 6. Activar el sitio y reiniciar Apache
+sudo a2ensite holamundo.conf
+sudo systemctl reload apache2
+
+# 7. Crear un segundo website con nombre, matrícula y asignatura
+sudo mkdir -p /var/www/html/josemiguel
+echo "<html><body><h2>José Miguel Mora</h2><p>Matrícula: 20250668</p><p>Asignatura: Sistemas Operativos</p></body></html>" | sudo tee /var/www/html/josemiguel/index.html
+
+# 8. Crear host virtual en puerto 80 para el nuevo sitio
+sudo nano /etc/apache2/sites-available/josemiguel.conf
+
+# Contenido del archivo:
+# <VirtualHost *:80>
+#     ServerAdmin jose@localhost
+#     ServerName josemiguel.local
+#     DocumentRoot /var/www/html/josemiguel
+#     ErrorLog ${APACHE_LOG_DIR}/error.log
+#     CustomLog ${APACHE_LOG_DIR}/access.log combined
+# </VirtualHost>
+
+sudo a2ensite josemiguel.conf
+sudo systemctl reload apache2
+
+# 9. Crear un host virtual en el puerto 8080 que apunte al mismo sitio anterior
+sudo cp /etc/apache2/sites-available/josemiguel.conf /etc/apache2/sites-available/josemiguel8080.conf
+sudo sed -i 's/:80/:8080/' /etc/apache2/sites-available/josemiguel8080.conf
+
+# Editar /etc/apache2/ports.conf y agregar:
+# Listen 8080
+
+sudo systemctl restart apache2
+
+# 10. Verificar sitios habilitados
+sudo apache2ctl -S
+
+
+===============================
+PRACTICA 2: Servidor de correos (Postfix)
+===============================
+
+# 1. Instalar Postfix
+sudo apt install postfix -y
+
+# 2. Durante la instalación seleccionar "Internet Site"
+# y colocar como nombre del sistema: parrot.local
+
+# 3. Editar configuración principal
+sudo nano /etc/postfix/main.cf
+
+# Confirmar que tenga:
+# myhostname = parrot.local
+# myorigin = /etc/mailname
+# mydestination = $myhostname, localhost.localdomain, localhost
+# relayhost =
+
+# 4. Reiniciar el servicio
+sudo systemctl restart postfix
+sudo systemctl enable postfix
+
+# 5. Enviar correo de prueba al maestro
+echo "Prueba de correo desde Parrot OS - José Miguel Mora - Matrícula 20250668 - Sistemas Operativos" | mail -s "MambruSeFueALaGuerra" os3conadrian@gmail.com
+
+# 6. Verificar cola de correos
+mailq
+
+# 7. Confirmar que el mensaje fue entregado (se verá en /var/log/mail.log)
+sudo tail -n 20 /var/log/mail.log
+
+
+===============================
+PRACTICA 3: Servidor de impresión (CUPS)
+===============================
+
+# 1. Instalar CUPS
+sudo apt install cups -y
+
+# 2. Habilitar y arrancar el servicio
+sudo systemctl enable cups
+sudo systemctl start cups
+
+# 3. Acceder desde el navegador a:
+# http://localhost:631
+
+# 4. Agregar impresora "Virtual_PDF_Printer" (tipo PDF)
+# En Location colocar: Parrot_Lab
+# Driver: Generic PDF Printer (en)
+
+# 5. Verificar impresoras instaladas
+lpstat -p -d
+
+# 6. Crear documento de prueba con LibreOffice Writer
+libreoffice --writer
+
+# Escribir el texto:
+# "Prueba de impresión desde Parrot OS
+# José Miguel Mora
+# Matrícula: 20250668
+# Asignatura: Sistemas Operativos"
+
+# Guardar como:
+# /home/jose/Documents/prueba.docs.docx
+
+# 7. Imprimir el documento en la impresora virtual
+lp -d Virtual_PDF_Printer /home/jose/Documents/prueba.docs.docx
+
+# 8. Verificar la salida del PDF
+ls ~/PDF
+
+# 9. Abrir el PDF generado
+xdg-open ~/PDF/home_jose_PDF.pdf
+
+============================================
+FIN DE LAS PRACTICAS - PARROT OS
+============================================
